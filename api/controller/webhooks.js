@@ -4,7 +4,7 @@ import User from "../model/User.js";
 // mangae controller from clerk User with database
 export const clerkWebhooks = async (req, res) => {
   try {
-    const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRE);
+    const webhook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
     // verify headers
     await webhook.verify(JSON.stringify(req.body), {
