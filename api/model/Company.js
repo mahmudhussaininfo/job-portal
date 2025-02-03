@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const companySchema = new mongoose.Schema(
   {
-    _id: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -15,19 +11,21 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     photo: {
       type: String,
       required: true,
     },
-    resume: {
-      type: String,
-    },
   },
   {
     timestamps: true,
+    versionKey: false,
   }
 );
 
-const User = mongoose.model("users", userSchema);
+const Company = mongoose.model("company", companySchema);
 
-export default User;
+export default Company;

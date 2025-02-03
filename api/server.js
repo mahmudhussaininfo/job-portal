@@ -7,6 +7,7 @@ import mongoDbConnection from "./db/config.js";
 import "./db/instrument.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from "./controller/webhooks.js";
+import companyController from "../api/routes/api.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
 app.post("/webhooks", clerkWebhooks);
+app.use("/api", companyController);
 
 // handle errror with sentry
 Sentry.setupExpressErrorHandler(app);
