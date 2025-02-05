@@ -8,6 +8,7 @@ import "./db/instrument.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from "./controller/webhooks.js";
 import companyController from "../api/routes/api.js";
+import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(clerkMiddleware());
 
 // routes
 app.get("/", (req, res) => {
