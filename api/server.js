@@ -13,7 +13,7 @@ const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -35,10 +35,12 @@ app.get("/debug-sentry", function mainHandler(req, res) {
 app.post("/webhooks", clerkWebhooks);
 app.use("/api", companyController);
 
+// connect to mongodb
+mongoDbConnection();
+
 // handle errror with sentry
 Sentry.setupExpressErrorHandler(app);
 
 app.listen(PORT, () => {
-  mongoDbConnection();
   console.log(`Server is running on port ${PORT}`.bgBlue.bold);
 });
