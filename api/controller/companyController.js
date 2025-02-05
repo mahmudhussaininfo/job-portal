@@ -39,7 +39,11 @@ export const companyRegister = async (req, res) => {
       photo: photo,
     });
 
-    return res.json({ message: "Company registered successfully", newComany });
+    return res.json({
+      success: true,
+      message: "Company registered successfully",
+      newComany,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
@@ -47,7 +51,7 @@ export const companyRegister = async (req, res) => {
 };
 
 // company login
-export const comanyLogin = async (req, res) => {
+export const companyLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
     const company = await Company.findOne({ email });
@@ -60,7 +64,7 @@ export const comanyLogin = async (req, res) => {
       return res.status(400).json({ message: "password is incorrect" });
     }
     // token
-    const token = await tokenEncode(company.email, company._id);
+    const token = await tokenEncode(company._id);
 
     // option
     const options = {
@@ -76,6 +80,22 @@ export const comanyLogin = async (req, res) => {
     return res
       .status(200)
       .json({ message: "login successful", company, token });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//get company
+export const companyDetails = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const company = await Company.findById(id).select("-password");
+    if (!company) {
+      return res.status(404).json({ message: "Company not found" });
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: "company details succed", company });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
