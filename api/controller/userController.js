@@ -4,23 +4,28 @@ import Job from "../model/Job.js";
 import { cloudUpload } from "../utils/cloudinary.js";
 
 export const getUserData = async (req, res) => {
-  const userId = req.auth?.userId;
-  console.log(userId);
-
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized, no userId found" });
-  }
-
   try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Get Clerk user ID from auth middleware
+    const userId = req.auth?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     }
-    return res
-      .status(200)
-      .json({ success: true, message: "user get success", user });
+
+    // Find user in MongoDB using Clerk's user ID (_id in MongoDB)
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    // Return user details from MongoDB
+    return res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
