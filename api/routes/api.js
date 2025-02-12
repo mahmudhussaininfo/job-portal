@@ -4,12 +4,12 @@ import * as userController from "../controller/userController.js";
 import express from "express";
 import { upload } from "../utils/multer.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import { requireAuth } from "@clerk/express";
+// import { requireAuth } from "@clerk/express";
 
 const router = express.Router();
 
 // user
-router.get("/user", requireAuth, userController.getUserData);
+router.get("/user", userController.getUserData);
 router.post("/apply-job", userController.applyForNewJob);
 router.get("/applied-jobs", userController.getUserAppliedJobs);
 router.post("/job-resume", userController.updateUserResume);
