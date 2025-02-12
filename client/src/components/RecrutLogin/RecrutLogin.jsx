@@ -4,8 +4,12 @@ import { RxCross2 } from "react-icons/rx";
 import { IoIosPerson } from "react-icons/io";
 import { FaRegEnvelope, FaLock } from "react-icons/fa";
 import { assets } from "../../../public/assets";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RecrutLogin = () => {
+  const navigate = useNavigate();
   const [state, setState] = useState("login");
   const [input, setInput] = useState({
     name: "",
@@ -14,7 +18,13 @@ const RecrutLogin = () => {
   });
   const [img, setImg] = useState(false);
   const [isDataSubmited, setIsDataSubmited] = useState(false);
-  const { setShowRecrut } = useContext(contextData);
+  const {
+    setShowRecrut,
+    BaseUrl,
+    companyData,
+    setCompanyData,
+    setIsAuthenticated,
+  } = useContext(contextData);
 
   const handleChange = (e) => {
     setInput((prev) => ({
@@ -23,11 +33,48 @@ const RecrutLogin = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (state === "Sign Up" && !isDataSubmited) {
-      setIsDataSubmited(true);
+      return setIsDataSubmited(true);
       // login logic
+    }
+
+    try {
+      if (state === "login") {
+        const { data } = await axios.post(`${BaseUrl}/api/login`, {
+          email: input.email,
+          password: input.password,
+        });
+        if (data) {
+          setCompanyData(data.company);
+          setShowRecrut(false);
+          setIsAuthenticated(true);
+          navigate("/dashboard");
+          toast.success(data.message);
+        } else {
+          toast.error(data.message);
+        }
+      } else {
+        const formData = new FormData();
+        formData.append("name", input.name);
+        formData.append("email", input.email);
+        formData.append("password", input.password);
+        formData.append("photo", img);
+        const { data } = await axios.post(`${BaseUrl}/api/register`, formData);
+        if (data) {
+          setCompanyData(data.company);
+          setShowRecrut(false);
+          setIsAuthenticated(true);
+          navigate("/dashboard");
+          toast.success(data.message);
+        } else {
+          toast.error(data.message);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+      toast.error(error.response.data.message);
     }
   };
 

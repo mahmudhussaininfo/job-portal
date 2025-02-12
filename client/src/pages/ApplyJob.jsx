@@ -10,18 +10,24 @@ import { MdAttachMoney } from "react-icons/md";
 import { MdOutlinePersonOutline } from "react-icons/md";
 import { CiLocationOn } from "react-icons/ci";
 import JobCard from "../components/JobCard/JobCard";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ApplyJob = () => {
   const { id } = useParams();
-  const { jobs } = useContext(contextData);
+  const { jobs, BaseUrl } = useContext(contextData);
   const [jobsData, setJobsData] = useState(null);
-  console.log(jobsData);
 
-  const fetchData = () => {
-    if (jobs) {
-      const data = jobs.filter((data) => data._id === id);
-      setJobsData(data[0]);
-      console.log(data[0]);
+  const fetchData = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/job/${id}`);
+      if (data) {
+        setJobsData(data.job);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -36,7 +42,7 @@ const ApplyJob = () => {
             {/* hero section */}
             <div className="md:h-80 mt-10 rounded-md shadow-md border border-blue-400 p-6 bg-blue-50 gap-5 flex flex-col md:flex-row md:items-center justify-between">
               <div>
-                <img className="h-10" src={jobsData?.companyId.image} alt="" />
+                <img className="h-10" src={jobsData?.companyId.photo} alt="" />
               </div>
               <div className="md:flex-1">
                 <div>

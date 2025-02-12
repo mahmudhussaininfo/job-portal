@@ -5,7 +5,6 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 const ViewApplications = () => {
   const { viewApplication } = useContext(contextData);
-  console.log(viewApplication);
 
   return (
     <>

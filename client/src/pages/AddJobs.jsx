@@ -1,10 +1,15 @@
 import Quill from "quill";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { JobCategories, JobLocations } from "../utils/utils";
+import axios from "axios";
+import { contextData } from "../context/AppContext";
+import { toast } from "react-toastify";
 
 const AddJobs = () => {
   const editorRef = useRef(null);
   const quillRef = useRef(null);
+
+  const { BaseUrl } = useContext(contextData);
 
   const [input, setInput] = useState({
     title: "",
@@ -22,6 +27,44 @@ const AddJobs = () => {
     }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // add job logic here
+      const description = quillRef.current.root.innerHTML;
+      const { data } = await axios.post(
+        `${BaseUrl}/api/job-add`,
+        {
+          title: input.title,
+          description,
+          category: input.category,
+          level: input.level,
+          location: input.location,
+          salary: input.salary,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      if (data) {
+        toast.success(data.message);
+        setInput({
+          title: "",
+          description: "",
+          category: "",
+          level: "",
+          location: "",
+          salary: 0,
+        });
+        quillRef.current.root.innerHTML = "";
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(data.message);
+    }
+  };
+
   useEffect(() => {
     if (!quillRef.current && editorRef.current) {
       const quill = new Quill(editorRef.current, {
@@ -34,7 +77,7 @@ const AddJobs = () => {
   return (
     <>
       <div className="container p-4 flex flex-col w-full items-start gap-3">
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <div className="mb-3 w-full">
             <h2>Job Title</h2>
             <input
@@ -117,7 +160,10 @@ const AddJobs = () => {
             />
           </div>
           <div className="mt-3">
-            <button className="bg-purple-500 m-1 text-white px-10 py-2 rounded-md">
+            <button
+              type="submit"
+              className="bg-purple-500 m-1 text-white px-10 py-2 rounded-md"
+            >
               Add
             </button>
           </div>

@@ -1,4 +1,5 @@
 import Job from "../model/Job.js";
+import JobApplication from "../model/JobApplication.js";
 
 export const jobAdd = async (req, res) => {
   try {
@@ -69,9 +70,22 @@ export const listJob = async (req, res) => {
         .json({ success: false, message: "No jobs found for this company" });
     }
 
+    // for todo applicant
+    const jobData = await Promise.all(
+      jobs.map(async (data) => {
+        const applicants = await JobApplication.find({
+          jobId: data._id,
+        });
+        return {
+          ...data.toObject(),
+          applicantsCount: applicants.length,
+        };
+      })
+    );
+
     return res
       .status(200)
-      .json({ success: true, message: "Jobs fetched successfully", jobs });
+      .json({ success: true, message: "Jobs fetched successfully", jobData });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -80,11 +94,11 @@ export const listJob = async (req, res) => {
 // jobs visibility
 export const jobVisibility = async (req, res) => {
   // or
-  const { _id: jobId, id: companyId } = req.body;
+  // const { _id: jobId, id: companyId } = req.body;
   try {
-    // const { _id } = req.body;
-    // const jobId = _id;
-    // const companyId = req.body.id;
+    const { _id } = req.body;
+    const jobId = _id;
+    const companyId = req.body.id;
     const job = await Job.findById(jobId);
     if (!job) {
       return res.status(404).json({ success: false, message: "Job not found" });

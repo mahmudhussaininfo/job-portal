@@ -1,10 +1,19 @@
-import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { RiHome3Line } from "react-icons/ri";
 import { MdAddToQueue } from "react-icons/md";
 import { FaStreetView } from "react-icons/fa";
+import { contextData } from "../../context/AppContext";
 
 const DashboardData = () => {
+  const navigate = useNavigate();
+
+  const { companyData } = useContext(contextData);
+  useEffect(() => {
+    if (companyData) {
+      navigate("/dashboard/manage-jobs");
+    }
+  }, [companyData]);
   return (
     <>
       <div className="min-h-screen">

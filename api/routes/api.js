@@ -18,6 +18,7 @@ router.post("/job-resume", userController.updateUserResume);
 router.post("/register", upload, comapnyController.companyRegister);
 router.post("/login", comapnyController.companyLogin);
 router.get("/company", authMiddleware, comapnyController.companyDetails);
+router.get("/company-delete", authMiddleware, comapnyController.companyLogout);
 
 // post job
 router.post("/job-add", authMiddleware, jobController.jobAdd);

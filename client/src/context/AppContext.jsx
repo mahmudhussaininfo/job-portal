@@ -5,10 +5,14 @@ import {
   ViewApplicationsPageData,
   ManageJobsData,
 } from "../utils/utils";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export const contextData = createContext();
+const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const ContextProvider = ({ children }) => {
+  axios.defaults.withCredentials = true;
   const [search, setSearch] = useState({
     title: "",
     location: "",
@@ -16,14 +20,26 @@ export const ContextProvider = ({ children }) => {
 
   const [isSearch, setIsSearch] = useState(false);
 
-  const [jobs, setJobs] = useState();
+  const [jobs, setJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState(null);
   const [viewApplication, setViewApplication] = useState(null);
   const [manageJobs, setManageJobs] = useState(null);
   const [showRecrut, setShowRecrut] = useState(false);
+  const [companyData, setCompanyData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const fetchJobsData = () => {
-    setJobs(JobsData);
+  const fetchJobsData = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/jobs`);
+      if (data) {
+        setJobs(data.jobs);
+      } else {
+        toast.error("Failed to fetch jobs.");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   const fetchmanageJobsData = () => {
     setManageJobs(ManageJobsData);
@@ -37,11 +53,29 @@ export const ContextProvider = ({ children }) => {
     setAppliedJobs(JobsApplied);
   };
 
+  const fetchAuthData = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/company`, {
+        withCredentials: true,
+      });
+      if (data) {
+        setIsAuthenticated(true);
+        setCompanyData(data.company);
+      }
+    } catch (error) {
+      setIsAuthenticated(false);
+      setCompanyData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchJobsData();
     fetchAppliedJobsData();
     fetchViewApplicationData();
     fetchmanageJobsData();
+    fetchAuthData();
   }, []);
 
   const value = {
@@ -55,6 +89,12 @@ export const ContextProvider = ({ children }) => {
     setShowRecrut,
     viewApplication,
     manageJobs,
+    BaseUrl,
+    companyData,
+    setCompanyData,
+    isAuthenticated,
+    setIsAuthenticated,
+    loading,
   };
 
   return <contextData.Provider value={value}>{children}</contextData.Provider>;

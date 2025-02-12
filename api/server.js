@@ -18,20 +18,15 @@ app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(
   cors({
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
-app.use(clerkMiddleware(), (req, res, next) => {
-  console.log("Clerk Auth:", req.auth); // This should log user info if authenticated
-  next();
-});
+app.use(clerkMiddleware());
 
 // routes
 app.get("/", (req, res) => {
   res.send("Hello, World!");
-});
-app.get("/hello", (req, res) => {
-  res.send("mahmud!");
 });
 
 app.get("/debug-sentry", function mainHandler(req, res) {

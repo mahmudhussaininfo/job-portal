@@ -100,3 +100,9 @@ export const companyDetails = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// logout company
+export const companyLogout = async (req, res) => {
+  res.clearCookie("Token");
+  return res.status(200).json({ message: "logout successful" });
+};

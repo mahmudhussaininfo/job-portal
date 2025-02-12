@@ -1,11 +1,53 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { contextData } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ManageJobs = () => {
-  const { manageJobs } = useContext(contextData);
+  const { BaseUrl } = useContext(contextData);
   const navigate = useNavigate();
+
+  const [job, setJob] = useState([]);
+
+  // job visibility change
+  const jobVissible = async (_id) => {
+    try {
+      const { data } = await axios.post(
+        `${BaseUrl}/api/job-visibility`,
+        {
+          _id,
+        },
+        { withCredentials: true }
+      );
+      if (data) {
+        toast.success(data.message);
+        fetchJobs();
+      } else {
+        toast.error("Failed to update job visibility");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const fetchJobs = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/list-jobs`, {
+        withCredentials: true,
+      });
+      if (data) {
+        setJob(data.jobData.reverse());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
 
   return (
     <>
@@ -24,18 +66,23 @@ const ManageJobs = () => {
             </tr>
           </thead>
           <tbody>
-            {manageJobs?.map((item, index) => {
+            {job?.map((item, index) => {
               return (
                 <tr key={index}>
                   <td className="py-2 px-4 border-b">{index + 1}</td>
                   <td className="py-2 px-4 border-b">{item.title}</td>
                   <td className="py-2 px-4 border-b">
-                    {moment(item.date).format("l")}
+                    {moment(item.date).format("llll")}
                   </td>
                   <td className="py-2 px-4 border-b">{item.location}</td>
-                  <td className="py-2 px-4 border-b">{item.applicants}</td>
+                  <td className="py-2 px-4 border-b">{item.applicantsCount}</td>
                   <td className="py-2 px-4 border-b">
-                    <input className="cursor-pointer" type="checkbox" />
+                    <input
+                      onChange={() => jobVissible(item._id)}
+                      checked={item.visible}
+                      className="cursor-pointer"
+                      type="checkbox"
+                    />
                   </td>
                 </tr>
               );

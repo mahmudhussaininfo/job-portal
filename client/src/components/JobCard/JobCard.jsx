@@ -7,7 +7,7 @@ const JobCard = ({ jobs }) => {
     <>
       <div className="bg-white rounded-lg shadow-md p-6 mb-5">
         <div>
-          <img className="h-6" src={jobs.companyId.image} alt="" />
+          <img className="h-6" src={jobs.companyId.photo} alt="" />
         </div>
         <div>
           <h3 className="font-semibold py-3">{jobs.title}</h3>

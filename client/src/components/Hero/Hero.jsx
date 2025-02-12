@@ -4,8 +4,8 @@ import { useContext } from "react";
 import { contextData } from "../../context/AppContext";
 
 const Hero = () => {
-  const { search, setSearch, isSearch, setIsSearch } = useContext(contextData);
-  console.log(search.title, search.location);
+  const { search, setSearch, isSearch, setIsSearch, BaseUrl } =
+    useContext(contextData);
 
   const titleRef = useRef(null);
   const locationRef = useRef(null);
