@@ -9,7 +9,9 @@ import clerkMiddleware from "../middleware/clerkMiddleware.js";
 const router = express.Router();
 
 // user
-router.get("/user", userController.getUserData);
+router.get("/user", authMiddleware, userController.getUserData);
+router.post("/register-user", upload, userController.createUser);
+router.post("/login-user", userController.loginUser);
 router.post("/apply-job", userController.applyForNewJob);
 router.get("/applied-jobs", userController.getUserAppliedJobs);
 router.post("/job-resume", userController.updateUserResume);

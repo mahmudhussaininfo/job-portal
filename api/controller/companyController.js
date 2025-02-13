@@ -36,7 +36,7 @@ export const companyRegister = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      photo: photo,
+      photo,
     });
 
     return res.json({

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { application } from "express";
 import cors from "cors";
 import "dotenv/config";
 import colors from "colors";
@@ -8,13 +8,13 @@ import "./db/instrument.js";
 import * as Sentry from "@sentry/node";
 import { clerkWebhooks } from "./controller/webhooks.js";
 import router from "../api/routes/api.js";
-// import { clerkMiddleware } from "@clerk/express";
 
 const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
@@ -22,7 +22,6 @@ app.use(
     credentials: true,
   })
 );
-// app.use(clerkMiddleware());
 
 // routes
 app.get("/", (req, res) => {
