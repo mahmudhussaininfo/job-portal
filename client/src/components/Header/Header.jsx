@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from "../../../public/logo.png";
 import { contextData } from "../../context/AppContext";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { showRecrut, setShowRecrut } = useContext(contextData);
+  const { showRecrut, setShowRecrut, user, setUser, BaseUrl } =
+    useContext(contextData);
 
   const [showLogin, setShowLogin] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
@@ -21,6 +23,21 @@ const Header = () => {
     setIsRegister(!isRegister);
   };
 
+  const handleLogout = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/logout-user`, {
+        withCredentials: true,
+      });
+      if (data) {
+        toast.success(data.message);
+        setUser(null); // Set user to null
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -28,28 +45,34 @@ const Header = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let response;
       if (isRegister) {
         // Register user
-        const response = await axios.post(
-          "http://localhost:6060/api/register-user",
-          formData
-        );
-        alert(response.data.message);
+        response = await axios.post(`${BaseUrl}/api/register-user`, formData);
       } else {
         // Login user
-        const response = await axios.post(
-          "http://localhost:6060/api/login-user",
+        response = await axios.post(
+          `${BaseUrl}/api/login-user`,
           {
             email: formData.email,
             password: formData.password,
+          },
+          {
+            withCredentials: true,
           }
         );
-        alert(response.data.message);
-        localStorage.setItem("token", response.data.token); // Store token
       }
-      setShowLogin(false); // Hide the modal after success
+
+      if (response.data) {
+        toast.success(response.data.message);
+        setUser(response.data.user); // Update the user state
+        setShowLogin(false); // Close the modal
+        navigate("/"); // Redirect if needed
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error) {
-      alert(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -65,17 +88,42 @@ const Header = () => {
               alt="Logo"
             />
           </div>
-          <div className="flex gap-5">
-            <button onClick={() => setShowRecrut(true)} className="">
-              Recruter Login
+
+          <div className="flex-1 text-end">
+            <button onClick={() => navigate("/application")}>
+              Applied Jobs
             </button>
-            <button
-              onClick={() => setShowLogin(true)}
-              className="bg-purple-500 text-white px-7 rounded-full py-2"
-            >
-              Login
-            </button>
+            <span className="ml-2 mr-2">|</span>
           </div>
+
+          {/* Show user info if logged in, else show login buttons */}
+          {user ? (
+            <div className="flex items-center gap-5">
+              <p>{user?.name}</p>
+              <div>
+                <img
+                  className="h-10 w-10 rounded-full"
+                  src={user?.photo}
+                  alt=""
+                />
+              </div>
+              <button onClick={handleLogout} className="text-red-500">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex gap-5">
+              <button onClick={() => setShowRecrut(true)}>
+                Recruter Login
+              </button>
+              <button
+                onClick={() => setShowLogin(true)}
+                className="bg-purple-500 text-white px-7 rounded-full py-2"
+              >
+                Login
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -116,7 +164,6 @@ const Header = () => {
                 required
               />
               {isRegister && <input type="file" />}
-
               <button
                 type="submit"
                 className="bg-purple-500 text-white p-2 rounded"

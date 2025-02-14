@@ -85,7 +85,7 @@ export const loginUser = async (req, res) => {
     };
 
     // set cookies
-    res.cookie("Token", token, options);
+    res.cookie("userToken", token, options);
 
     return res.status(200).json({ message: "login successful", user, token });
   } catch (error) {
@@ -93,48 +93,56 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// logout user
+export const logoutUser = async (req, res) => {
+  res.clearCookie("userToken");
+  return res.status(200).json({ message: "logout successful" });
+};
+
 // apply for a job
 export const applyForNewJob = async (req, res) => {
-  const userId = req.auth?.userId;
-  const { jobId } = req.body;
-
-  if (!userId || !jobId) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized, no userId or jobId found" });
-  }
-
+  const { id: userId, jobId } = req.body;
   try {
-    const alreadyApplied = await JobAplication.find({ userId, jobId });
-    if (alreadyApplied.length > 0) {
+    if (!userId || !jobId) {
       return res
         .status(400)
-        .json({ message: "You have already applied for this job" });
+        .json({ status: false, message: "User ID and Job ID are required" });
     }
+
+    const alreadyApplied = await JobAplication.find({ userId, jobId });
+    if (alreadyApplied) {
+      return res.status(400).json({
+        status: false,
+        message: "You have already applied for this job",
+      });
+    }
+
     const jobData = await Job.findById(jobId);
     if (!jobData) {
       return res.status(404).json({ message: "Job not found" });
     }
-    const newJobs = await JobAplication.create({
+
+    const newJobApplication = await JobAplication.create({
       userId,
       companyId: jobData.companyId,
       jobId,
       date: Date.now(),
     });
+
     return res.status(200).json({
       success: true,
       message: "Job Application submitted successfully",
-      newJobs,
+      newJobApplication,
     });
   } catch (error) {
-    console.log(error.message);
+    console.error("Error applying for job:", error.message);
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 // user applied jobs
 export const getUserAppliedJobs = async (req, res) => {
-  const userId = req.auth?.userId;
+  const { id: userId } = req.body;
 
   if (!userId) {
     return res.status(401).json({ message: "Unauthorized, no userId found" });
@@ -165,23 +173,20 @@ export const getUserAppliedJobs = async (req, res) => {
 // update user profile resume
 export const updateUserResume = async (req, res) => {
   try {
-    const userId = req.auth?.userId;
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized, no userId found" });
-    }
-    const userData = await User.findById(userId);
-    if (!userData) {
+    const { id } = req.body;
+    const user = await User.findById(id);
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     if (req.file) {
       const uploadFile = await cloudUpload(req);
-      userData.resume = uploadFile.secure_url;
+      user.resume = uploadFile.secure_url;
     }
-    await userData.save();
+    await user.save();
     return res
       .status(200)
-      .json({ success: true, message: "resumed successfully", userData });
+      .json({ success: true, message: "resumed successfully", user });
   } catch (error) {
     return res.status(401).json({ success: false, message: error.message });
   }

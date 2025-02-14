@@ -3,13 +3,35 @@ import Layout from "../components/Layout/Layout";
 import { RiUploadCloudLine } from "react-icons/ri";
 import { contextData } from "./../context/AppContext";
 import moment from "moment";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const Application = () => {
   const [edit, setEdit] = useState(false);
   const [upload, setUpload] = useState(null);
 
-  const { appliedJobs } = useContext(contextData);
-  console.log(appliedJobs);
+  const { appliedJobs, user, BaseUrl, fetchUser } = useContext(contextData);
+
+  const handleResume = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("resume", upload);
+      const { data } = await axios.post(`${BaseUrl}/api/job-resume`, formData, {
+        withCredentials: true,
+      });
+      if (data) {
+        toast.success(data.message);
+        await fetchUser();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+    setEdit(false);
+    setUpload(null);
+  };
 
   return (
     <>
@@ -19,7 +41,7 @@ const Application = () => {
             <div>
               <div>
                 <h1 className="text-xl font-semibold py-3">Your Resume</h1>
-                {edit ? (
+                {edit || (user && user.resume === "") ? (
                   <>
                     <div className="flex gap-2">
                       <label
@@ -27,7 +49,7 @@ const Application = () => {
                         className="flex items-center gap-2"
                       >
                         <p className="bg-purple-100 m-1 border border-purple-400 text-black px-5 py-2 rounded-md">
-                          Select Resume
+                          {upload ? upload.name : "Select Resume"}
                         </p>
                         <input
                           type="file"
@@ -41,7 +63,7 @@ const Application = () => {
                         </div>
                       </label>
                       <button
-                        onClick={() => setEdit(false)}
+                        onClick={handleResume}
                         className="bg-purple-500 m-1 border border-purple-400 text-white px-5 py-2 rounded-md"
                       >
                         Save

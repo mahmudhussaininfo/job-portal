@@ -2,19 +2,26 @@ import * as comapnyController from "../controller/companyController.js";
 import * as jobController from "../controller/jobController.js";
 import * as userController from "../controller/userController.js";
 import express from "express";
-import { upload } from "../utils/multer.js";
+import { upload, file } from "../utils/multer.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import clerkMiddleware from "../middleware/clerkMiddleware.js";
+import userMiddleware from "../middleware/userMiddleware.js";
 
 const router = express.Router();
 
 // user
-router.get("/user", authMiddleware, userController.getUserData);
+router.get("/user", userMiddleware, userController.getUserData);
 router.post("/register-user", upload, userController.createUser);
 router.post("/login-user", userController.loginUser);
-router.post("/apply-job", userController.applyForNewJob);
-router.get("/applied-jobs", userController.getUserAppliedJobs);
-router.post("/job-resume", userController.updateUserResume);
+router.get("/logout-user", userMiddleware, userController.logoutUser);
+router.post("/apply-job", userMiddleware, userController.applyForNewJob);
+router.get("/applied-jobs", userMiddleware, userController.getUserAppliedJobs);
+router.post(
+  "/job-resume",
+  file,
+  userMiddleware,
+  userController.updateUserResume
+);
 
 // register comany
 router.post("/register", upload, comapnyController.companyRegister);

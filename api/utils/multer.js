@@ -9,3 +9,4 @@ const storage = multer.diskStorage({
 
 // multer middleware configuration
 export const upload = multer({ storage }).single("photo");
+export const file = multer({ storage }).single("resume");

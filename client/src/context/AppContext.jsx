@@ -28,6 +28,24 @@ export const ContextProvider = ({ children }) => {
   const [companyData, setCompanyData] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/user`, {
+        withCredentials: true,
+      });
+      if (data) {
+        setUser(data.user);
+      } else {
+        setUser(null);
+        toast.error(data.message);
+      }
+    } catch (error) {
+      setUser(null);
+      toast.error(error.message);
+    }
+  };
 
   const fetchJobsData = async () => {
     try {
@@ -76,6 +94,7 @@ export const ContextProvider = ({ children }) => {
     fetchViewApplicationData();
     fetchmanageJobsData();
     fetchAuthData();
+    fetchUser();
   }, []);
 
   const value = {
@@ -95,6 +114,8 @@ export const ContextProvider = ({ children }) => {
     isAuthenticated,
     setIsAuthenticated,
     loading,
+    user,
+    fetchUser,
   };
 
   return <contextData.Provider value={value}>{children}</contextData.Provider>;

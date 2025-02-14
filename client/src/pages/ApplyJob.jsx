@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { contextData } from "../context/AppContext";
 import Loading from "../components/Loading/Loading";
 import kconvert from "k-convert";
@@ -14,8 +14,9 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 const ApplyJob = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const { jobs, BaseUrl } = useContext(contextData);
+  const { jobs, BaseUrl, user } = useContext(contextData);
   const [jobsData, setJobsData] = useState(null);
 
   const fetchData = async () => {
@@ -25,6 +26,31 @@ const ApplyJob = () => {
         setJobsData(data.job);
       } else {
         toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const applyHandler = async () => {
+    try {
+      if (!user) {
+        return toast.error("login to apply for jobs");
+      }
+      if (!user.resume) {
+        navigate("/application");
+        return toast.error("upload your resume first");
+      }
+      const { data } = await axios.post(
+        `${BaseUrl}/api/apply-job`,
+        { jobId: jobsData._id },
+        { withCredentials: true }
+      );
+      if (data) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+        console.log(data.message);
       }
     } catch (error) {
       toast.error(error.message);
@@ -78,7 +104,10 @@ const ApplyJob = () => {
                 </div>
               </div>
               <div>
-                <button className="bg-purple-500 m-1 text-white px-7 py-2 rounded-md">
+                <button
+                  onClick={applyHandler}
+                  className="bg-purple-500 m-1 text-white px-7 py-2 rounded-md"
+                >
                   Apply Now
                 </button>
                 <p className="md:text-center">
