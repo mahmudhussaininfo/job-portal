@@ -16,8 +16,23 @@ import axios from "axios";
 const ApplyJob = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { jobs, BaseUrl, user } = useContext(contextData);
+  const { jobs, BaseUrl, user, fetchUserApplied, application } =
+    useContext(contextData);
   const [jobsData, setJobsData] = useState(null);
+  const [isApplied, setIsApplied] = useState(false);
+
+  const checkAlreadyApplied = () => {
+    const hasApplied = application.some(
+      (data) => data.jobId._id === jobsData._id
+    );
+    setIsApplied(hasApplied);
+  };
+
+  useEffect(() => {
+    if (application.length > 0 && jobsData) {
+      checkAlreadyApplied();
+    }
+  }, [jobsData, application, id]);
 
   const fetchData = async () => {
     try {
@@ -48,6 +63,7 @@ const ApplyJob = () => {
       );
       if (data) {
         toast.success(data.message);
+        fetchUserApplied();
       } else {
         toast.error(data.message);
         console.log(data.message);
@@ -104,12 +120,23 @@ const ApplyJob = () => {
                 </div>
               </div>
               <div>
-                <button
-                  onClick={applyHandler}
-                  className="bg-purple-500 m-1 text-white px-7 py-2 rounded-md"
-                >
-                  Apply Now
-                </button>
+                {isApplied ? (
+                  <button
+                    onClick={applyHandler}
+                    disabled
+                    className="bg-green-600 m-1 font-semibold text-white px-7 py-2 rounded-md"
+                  >
+                    Applied
+                  </button>
+                ) : (
+                  <button
+                    onClick={applyHandler}
+                    className="bg-purple-500 m-1 font-semibold text-white px-7 py-2 rounded-md"
+                  >
+                    Apply Now
+                  </button>
+                )}
+
                 <p className="md:text-center">
                   {moment(jobsData?.date).fromNow()}
                 </p>
@@ -125,9 +152,23 @@ const ApplyJob = () => {
                   className="rich-text md:w-3/4"
                   dangerouslySetInnerHTML={{ __html: jobsData?.description }}
                 ></p>
-                <button className="bg-purple-500 m-1 mt-8 text-white px-7 py-2 rounded-md">
-                  Apply Now
-                </button>
+
+                {isApplied ? (
+                  <button
+                    onClick={applyHandler}
+                    disabled
+                    className="bg-green-600 m-1 font-semibold text-white px-7 py-2 rounded-md"
+                  >
+                    Applied
+                  </button>
+                ) : (
+                  <button
+                    onClick={applyHandler}
+                    className="bg-purple-500 m-1 font-semibold text-white px-7 py-2 rounded-md"
+                  >
+                    Apply Now
+                  </button>
+                )}
               </div>
               {/* more jobs */}
               <div className="md:w-2/6 mt-10">

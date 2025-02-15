@@ -95,6 +95,9 @@ const Header = () => {
             </button>
             <span className="ml-2 mr-2">|</span>
           </div>
+          <div>
+            <button onClick={() => setShowRecrut(true)}>Recruter Login</button>
+          </div>
 
           {/* Show user info if logged in, else show login buttons */}
           {user ? (
@@ -113,9 +116,6 @@ const Header = () => {
             </div>
           ) : (
             <div className="flex gap-5">
-              <button onClick={() => setShowRecrut(true)}>
-                Recruter Login
-              </button>
               <button
                 onClick={() => setShowLogin(true)}
                 className="bg-purple-500 text-white px-7 rounded-full py-2"

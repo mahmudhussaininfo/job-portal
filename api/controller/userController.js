@@ -109,11 +109,11 @@ export const applyForNewJob = async (req, res) => {
         .json({ status: false, message: "User ID and Job ID are required" });
     }
 
-    const alreadyApplied = await JobAplication.find({ userId, jobId });
+    const alreadyApplied = await JobAplication.findOne({ userId, jobId });
     if (alreadyApplied) {
       return res.status(400).json({
         status: false,
-        message: "You have already applied for this job",
+        message: "You have already applied for this Job",
       });
     }
 
@@ -147,7 +147,6 @@ export const getUserAppliedJobs = async (req, res) => {
   if (!userId) {
     return res.status(401).json({ message: "Unauthorized, no userId found" });
   }
-
   try {
     const appliedJobs = await JobAplication.find({ userId })
       .populate("companyId", "name email photo")

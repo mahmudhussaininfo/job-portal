@@ -29,6 +29,7 @@ export const ContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [application, setApplication] = useState([]);
 
   const fetchUser = async () => {
     try {
@@ -88,6 +89,22 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
+  const fetchUserApplied = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/applied-jobs`, {
+        withCredentials: true,
+      });
+      if (data) {
+        toast.success(data.message);
+        setApplication(data.appliedJobs);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     fetchJobsData();
     fetchAppliedJobsData();
@@ -95,6 +112,7 @@ export const ContextProvider = ({ children }) => {
     fetchmanageJobsData();
     fetchAuthData();
     fetchUser();
+    fetchUserApplied();
   }, []);
 
   const value = {
@@ -116,6 +134,8 @@ export const ContextProvider = ({ children }) => {
     loading,
     user,
     fetchUser,
+    application,
+    fetchUserApplied,
   };
 
   return <contextData.Provider value={value}>{children}</contextData.Provider>;

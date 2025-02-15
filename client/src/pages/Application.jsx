@@ -10,7 +10,8 @@ const Application = () => {
   const [edit, setEdit] = useState(false);
   const [upload, setUpload] = useState(null);
 
-  const { appliedJobs, user, BaseUrl, fetchUser } = useContext(contextData);
+  const { appliedJobs, user, BaseUrl, fetchUser, application } =
+    useContext(contextData);
 
   const handleResume = async () => {
     try {
@@ -100,7 +101,7 @@ const Application = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {appliedJobs?.map((item, index) => {
+                    {application?.map((item, index) => {
                       let bgColor;
                       if (item.status === "Pending") {
                         bgColor = "bg-blue-100 text-blue-600";
@@ -114,15 +115,21 @@ const Application = () => {
                       return (
                         <tr key={index}>
                           <td className="flex items-center gap-3 border-b py-3 px-4">
-                            <img className="h-4" src={item.logo} alt="" />
-                            {item.company}
+                            <img
+                              className="h-4"
+                              src={item.companyId.photo}
+                              alt=""
+                            />
+                            {item.jobId.title}
                           </td>
-                          <td className="border-b py-3 px-4">{item.title}</td>
                           <td className="border-b py-3 px-4">
-                            {item.location}
+                            {item.companyId.name}
                           </td>
                           <td className="border-b py-3 px-4">
-                            {moment(item.date).format("LLL")}
+                            {item.jobId.location}
+                          </td>
+                          <td className="border-b py-3 px-4">
+                            {moment(item.date).format("LL")}
                           </td>
                           <td
                             className={`${bgColor} py-2 rounded px-4 border-b text-center`}
