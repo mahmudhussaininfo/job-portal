@@ -90,7 +90,7 @@ const RecrutLogin = () => {
         className="absolute top-0 left-0 right-0 bottom-0 z-10 
       bg-black/50 flex justify-center items-center"
       >
-        <div className="bg-white p-10 relative flex md:flex-col items-center rounded-lg">
+        <div className="bg-white p-10 relative flex flex-col items-center rounded-lg">
           <button
             onClick={() => setShowRecrut(false)}
             className="right-3 top-3 absolute "

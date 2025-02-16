@@ -70,9 +70,6 @@ const DashboardHeader = () => {
               {isDropdownOpen && (
                 <div className="absolute right-0 top-12 z-10 bg-white border border-gray-300 rounded shadow-md w-40">
                   <ul className="list-none p-2">
-                    <li className="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-                      My Profile
-                    </li>
                     <li
                       onClick={handleLogout}
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer"

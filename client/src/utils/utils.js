@@ -2,6 +2,7 @@ import company_icon from "../../public/adobe_logo.png";
 import profile_img from "../../public/profile_img.png";
 
 export const JobCategories = [
+  "-Select Language-",
   "Programming",
   "Data Science",
   "Designing",
@@ -12,13 +13,17 @@ export const JobCategories = [
 ];
 
 export const JobLocations = [
-  "Bangalore",
-  "Washington",
-  "Hyderabad",
-  "Mumbai",
+  "-Select Location-",
   "California",
   "Chennai",
   "New York",
+  "Sylhet",
+  "Khulna",
+  "Rajshahi",
+  "Barisal",
+  "Dhaka",
+  "Chattrogram",
+  "CoxBazar",
 ];
 
 export const JobsApplied = [

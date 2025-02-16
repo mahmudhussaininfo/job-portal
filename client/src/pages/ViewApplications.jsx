@@ -2,9 +2,29 @@ import React, { useContext } from "react";
 import { contextData } from "../context/AppContext";
 import { AiOutlineDownload } from "react-icons/ai";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ViewApplications = () => {
-  const { viewApplication } = useContext(contextData);
+  const { companyJobDetails, BaseUrl, fetchCompanyJobDetails } =
+    useContext(contextData);
+
+  const resumeUpdate = async (id, status) => {
+    try {
+      const { data } = await axios.post(`${BaseUrl}/api/update-status`, {
+        id,
+        status,
+      });
+      if (data) {
+        toast.success(data.message);
+        await fetchCompanyJobDetails();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -23,44 +43,56 @@ const ViewApplications = () => {
             </tr>
           </thead>
           <tbody>
-            {viewApplication?.map((item, index) => (
+            {companyJobDetails?.map((item, index) => (
               <tr key={index} className="bg-gray-50 border-t-2">
                 <td className="py-2 px-4 border-b text-center">{index + 1}</td>
                 <td className="py-2 px-4 border-b flex items-center gap-3">
-                  <img src={item.imgSrc} alt="" />
-                  {item.name}
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src={item.userId.photo}
+                    alt=""
+                  />
+                  {item.userId.name}
                 </td>
-                <td className="py-2 px-4 border-b">{item.jobTitle}</td>
-                <td className="py-2 px-4 border-b">{item.location}</td>
+                <td className="py-2 px-4 border-b">{item.jobId.title}</td>
+                <td className="py-2 px-4 border-b">{item.jobId.location}</td>
                 <td className="py-2 px-4 border-b">
-                  <button
+                  <a
                     className="flex font-semibold py-2 px-3 text-blue-500 bg-blue-100 gap-2 items-center rounded"
-                    href={item.resume}
+                    href={item.userId.resume}
                     target="_blank"
                   >
                     View Resume
                     <AiOutlineDownload />
-                  </button>
+                  </a>
                 </td>
-                <td className="py-2 px-4 border-b text-center">
-                  {item.status}
-                </td>
-                <td className="py-2 px-4 border-b relative text-left">
-                  {" "}
-                  <div className="relative inline-block text-left group">
-                    <button className="text-2xl cursor-pointer">
-                      <HiOutlineDotsHorizontal />
-                    </button>
-                    <div className="z-30 absolute right-0 top-4 flex-col items-center bg-white hidden group-hover:block shadow-md w-32">
-                      <button className="block w-full text-left px-4 py-2 hover:bg-blue-100 text-blue-500">
-                        Accept
+                {item.status === "Pending" ? (
+                  <td className="py-2 px-4 border-b relative text-left">
+                    <div className="relative inline-block text-left group">
+                      <button className="text-2xl cursor-pointer">
+                        <HiOutlineDotsHorizontal />
                       </button>
-                      <button className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-500">
-                        Reject
-                      </button>
+                      <div className="z-30 absolute right-0 top-4 flex-col items-center bg-white hidden group-hover:block shadow-md w-32">
+                        <button
+                          onClick={() => resumeUpdate(item._id, "Acepeted")}
+                          className="block w-full text-left px-4 py-2 hover:bg-blue-100 text-blue-500"
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => resumeUpdate(item._id, "Rejected")}
+                          className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-500"
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </td>
+                  </td>
+                ) : (
+                  <td className="py-2 px-4 border-b text-center">
+                    {item.status}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

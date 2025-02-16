@@ -142,6 +142,7 @@ const AddJobs = () => {
                 value={input.level}
                 onChange={handleChange}
               >
+                <option value="Junior Level">-Select-level-</option>
                 <option value="Junior Level">Junior Level</option>
                 <option value="Middium Level">Middium Level</option>
                 <option value="Senior Level">Senior Level</option>

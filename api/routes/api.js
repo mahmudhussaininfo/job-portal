@@ -23,10 +23,16 @@ router.post(
   userController.updateUserResume
 );
 
-// register comany
+// comany
 router.post("/register", upload, comapnyController.companyRegister);
 router.post("/login", comapnyController.companyLogin);
 router.get("/company", authMiddleware, comapnyController.companyDetails);
+router.get(
+  "/company-jobDetais",
+  authMiddleware,
+  comapnyController.companyPostedJobs
+);
+router.post("/update-status", comapnyController.updateJobStatus);
 router.get("/company-delete", authMiddleware, comapnyController.companyLogout);
 
 // post job

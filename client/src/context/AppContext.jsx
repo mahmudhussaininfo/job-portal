@@ -29,6 +29,7 @@ export const ContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [companyJobDetails, setCompanyJobDetails] = useState([]);
   const [application, setApplication] = useState([]);
 
   const fetchUser = async () => {
@@ -89,6 +90,21 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
+  const fetchCompanyJobDetails = async () => {
+    try {
+      const { data } = await axios.get(`${BaseUrl}/api/company-jobDetais`, {
+        withCredentials: true,
+      });
+      if (data) {
+        setCompanyJobDetails(data.applicants);
+      } else {
+        toast.error("Failed to fetch company job details.");
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const fetchUserApplied = async () => {
     try {
       const { data } = await axios.get(`${BaseUrl}/api/applied-jobs`, {
@@ -112,6 +128,7 @@ export const ContextProvider = ({ children }) => {
     fetchmanageJobsData();
     fetchAuthData();
     fetchUser();
+    fetchCompanyJobDetails();
     fetchUserApplied();
   }, []);
 
@@ -134,6 +151,8 @@ export const ContextProvider = ({ children }) => {
     loading,
     user,
     fetchUser,
+    companyJobDetails,
+    fetchCompanyJobDetails,
     application,
     fetchUserApplied,
   };

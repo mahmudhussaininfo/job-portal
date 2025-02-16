@@ -181,7 +181,12 @@ const ApplyJob = () => {
                       job?._id !== jobsData?._id &&
                       job?.companyId?._id === jobsData?.companyId?._id
                   )
-                  .filter((job) => true)
+                  .filter((job) => {
+                    const appliedJobsId = new Set(
+                      application.map((data) => data.jobId && data.jobId._id)
+                    );
+                    return !appliedJobsId.has(job._id);
+                  })
                   .slice(0, 3)
                   .map((item, index) => (
                     <JobCard jobs={item} key={index} />

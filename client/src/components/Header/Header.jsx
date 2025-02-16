@@ -1,4 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import logo from "../../../public/logo.png";
@@ -7,7 +8,7 @@ import { toast } from "react-toastify";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { showRecrut, setShowRecrut, user, setUser, BaseUrl } =
+  const { setShowRecrut, user, setUser, BaseUrl, isAuthenticated } =
     useContext(contextData);
 
   const [showLogin, setShowLogin] = useState(false);
@@ -19,9 +20,24 @@ const Header = () => {
     photo: "",
   });
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   const toggleForm = () => {
     setIsRegister(!isRegister);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -65,9 +81,9 @@ const Header = () => {
 
       if (response.data) {
         toast.success(response.data.message);
-        setUser(response.data.user); // Update the user state
-        setShowLogin(false); // Close the modal
-        navigate("/"); // Redirect if needed
+        setUser(response.data.user);
+        setShowLogin(false);
+        navigate("/");
       } else {
         toast.error(response.data.message);
       }
@@ -90,29 +106,56 @@ const Header = () => {
           </div>
 
           <div className="flex-1 text-end">
-            <button onClick={() => navigate("/application")}>
+            {isAuthenticated ? (
+              <>
+                {" "}
+                <span className="mr-3 max-sm:hidden">
+                  <Link to={"/dashboard"}>Dashboard</Link>
+                </span>
+                <span className="max-sm:hidden"> | </span>
+              </>
+            ) : null}
+
+            <button
+              className="bg-purple-500 text-white md:px-5 md:py-2 py-2 px-6 text-sm rounded-full ml-2 max-sm:mr-5"
+              onClick={() => navigate("/application")}
+            >
               Applied Jobs
             </button>
-            <span className="ml-2 mr-2">|</span>
           </div>
           <div>
-            <button onClick={() => setShowRecrut(true)}>Recruter Login</button>
+            <button
+              className="bg-purple-500 max-sm:hidden text-white text-sm px-5 py-2 rounded-full mr-4 ml-2"
+              onClick={() => setShowRecrut(true)}
+            >
+              Recruter Login
+            </button>
           </div>
 
           {/* Show user info if logged in, else show login buttons */}
           {user ? (
             <div className="flex items-center gap-5">
-              <p>{user?.name}</p>
-              <div>
+              <div ref={dropdownRef} className="relative cursor-pointer">
                 <img
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="h-10 w-10 rounded-full"
                   src={user?.photo}
                   alt=""
                 />
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div className="absolute right-0 top-12 z-20 bg-white border border-gray-300 rounded shadow-md w-40">
+                    <ul className="list-none p-2">
+                      <li className="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                        <button onClick={handleLogout} className="text-red-500">
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
               </div>
-              <button onClick={handleLogout} className="text-red-500">
-                Logout
-              </button>
+              <p className="text-sm">{user?.name}</p>
             </div>
           ) : (
             <div className="flex gap-5">

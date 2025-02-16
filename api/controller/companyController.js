@@ -1,4 +1,5 @@
 import Company from "../model/Company.js";
+import JobAplication from "../model/JobApplication.js";
 import { cloudUpload } from "../utils/cloudinary.js";
 import bycrpt from "bcryptjs";
 import { tokenEncode } from "../utils/token.js";
@@ -105,4 +106,45 @@ export const companyDetails = async (req, res) => {
 export const companyLogout = async (req, res) => {
   res.clearCookie("Token");
   return res.status(200).json({ message: "logout successful" });
+};
+
+// company posted jobs
+export const companyPostedJobs = async (req, res) => {
+  try {
+    const { id: companyId } = req.body;
+    const applicants = await JobAplication.find({ companyId })
+      .populate("userId", "name photo resume")
+      .populate("jobId", "title location category level salary")
+      .exec();
+    return res.status(200).json({
+      success: true,
+      message: "company posted jobs successfully",
+      applicants,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// job status update
+export const updateJobStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    const updatedstatus = await JobAplication.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "job status updated successfully",
+      updatedstatus,
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: error.message });
+  }
 };
