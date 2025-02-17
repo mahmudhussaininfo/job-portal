@@ -1,4 +1,4 @@
-import express, { application } from "express";
+import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import colors from "colors";
@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import mongoDbConnection from "./db/config.js";
 import "./db/instrument.js";
 import * as Sentry from "@sentry/node";
-import { clerkWebhooks } from "./controller/webhooks.js";
 import router from "../api/routes/api.js";
 
 const app = express();
@@ -31,7 +30,6 @@ app.get("/", (req, res) => {
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
-app.post("/webhooks", clerkWebhooks);
 app.use("/api", router);
 
 // connect to mongodb
