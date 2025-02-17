@@ -44,6 +44,9 @@ const Header = () => {
     try {
       const { data } = await axios.get(`${BaseUrl}/logout-user`, {
         withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       if (data) {
         toast.success(data.message);
