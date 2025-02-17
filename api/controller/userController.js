@@ -51,7 +51,7 @@ export const createUser = async (req, res) => {
     });
     return res
       .status(200)
-      .json({ status: true, message: "user created success", user });
+      .json({ status: true, message: "User created successfully", user });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ success: false, message: error.message });
@@ -87,7 +87,9 @@ export const loginUser = async (req, res) => {
     // set cookies
     res.cookie("userToken", token, options);
 
-    return res.status(200).json({ message: "login successful", user, token });
+    return res
+      .status(200)
+      .json({ status: true, message: "Login successful", user, token });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

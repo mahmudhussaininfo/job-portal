@@ -41,7 +41,6 @@ export const ContextProvider = ({ children }) => {
         setUser(data.user);
       } else {
         setUser(null);
-        toast.error(data.message);
       }
     } catch (error) {
       setUser(null);
@@ -111,7 +110,6 @@ export const ContextProvider = ({ children }) => {
         withCredentials: true,
       });
       if (data) {
-        toast.success(data.message);
         setApplication(data.appliedJobs);
       } else {
         toast.error(data.message);

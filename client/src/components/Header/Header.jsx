@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../../public/logo.png";
 import { contextData } from "../../context/AppContext";
 import { toast } from "react-toastify";
+import { RxCross2 } from "react-icons/rx";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { setShowRecrut, user, setUser, BaseUrl, isAuthenticated } =
+  const { setShowRecrut, user, setUser, BaseUrl, isAuthenticated, fetchUser } =
     useContext(contextData);
 
   const [showLogin, setShowLogin] = useState(false);
@@ -46,7 +47,7 @@ const Header = () => {
       });
       if (data) {
         toast.success(data.message);
-        setUser(null); // Set user to null
+        fetchUser();
         navigate("/");
       }
     } catch (error) {
@@ -61,13 +62,23 @@ const Header = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response;
       if (isRegister) {
         // Register user
-        response = await axios.post(`${BaseUrl}/api/register-user`, formData);
+        const { data } = await axios.post(
+          `${BaseUrl}/api/register-user`,
+          formData
+        );
+        if (data) {
+          toast.success(data.message);
+          setUser(data.user);
+          fetchUser();
+          setShowLogin(false);
+        } else {
+          toast.error(data.message);
+        }
       } else {
         // Login user
-        response = await axios.post(
+        const { data } = await axios.post(
           `${BaseUrl}/api/login-user`,
           {
             email: formData.email,
@@ -77,18 +88,16 @@ const Header = () => {
             withCredentials: true,
           }
         );
-      }
-
-      if (response.data) {
-        toast.success(response.data.message);
-        setUser(response.data.user);
-        setShowLogin(false);
-        navigate("/");
-      } else {
-        toast.error(response.data.message);
+        if (data) {
+          toast.success(data.message);
+          fetchUser();
+          setShowLogin(false);
+        } else {
+          toast.error(data.message);
+        }
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(error.response.data.message);
     }
   };
 
@@ -173,8 +182,14 @@ const Header = () => {
       {/* Login/Register Modal */}
       {showLogin && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-5 rounded-lg shadow-lg w-96">
-            <h2 className="text-center text-xl font-bold">
+          <div className="bg-white p-5 rounded-lg shadow-lg w-96 relative">
+            <button
+              onClick={() => setShowLogin(false)}
+              className="right-3 top-3 absolute"
+            >
+              <RxCross2 />
+            </button>
+            <h2 className="text-center text-xl font-bold py-3 mb-5">
               {isRegister ? "Register" : "Login"}
             </h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -225,12 +240,6 @@ const Header = () => {
                 {isRegister ? "Login" : "Register"}
               </span>
             </p>
-            <button
-              onClick={() => setShowLogin(false)}
-              className="mt-3 text-red-500 block text-center"
-            >
-              Close
-            </button>
           </div>
         </div>
       )}
