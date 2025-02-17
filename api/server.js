@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://job-portal-client-six-lime.vercel.app",
+      "https://job-portal-client-brown.vercel.app",
     ],
     credentials: true,
   })
