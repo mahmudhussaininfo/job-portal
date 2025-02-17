@@ -8,13 +8,13 @@ export default (req, res, next) => {
     return res.status(401).json({ message: "unauthorized" });
   }
 
-  const isProduction = process.env.NODE_ENV === "production";
+  // const isProduction = process.env.NODE_ENV === "production";
 
   // set cookie for refesh token
   const options = {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    secure: isProduction,
+    secure: true,
     sameSite: "none",
   };
 

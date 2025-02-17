@@ -67,13 +67,13 @@ export const companyLogin = async (req, res) => {
     // token
     const token = await tokenEncode(company._id);
 
-    const isProduction = process.env.NODE_ENV === "production";
+    // const isProduction = process.env.NODE_ENV === "production";
 
     // option
     const options = {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: isProduction,
+      secure: true,
       sameSite: "none",
     };
 
