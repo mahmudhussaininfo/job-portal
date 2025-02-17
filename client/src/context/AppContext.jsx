@@ -9,10 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export const contextData = createContext();
-const BaseUrl =
-  import.meta.env.MODE === "development"
-    ? import.meta.env.VITE_BACKEND_URL
-    : import.meta.env.VITE_LIVE_BACKEND_URL;
+const BaseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const ContextProvider = ({ children }) => {
   axios.defaults.withCredentials = true;
