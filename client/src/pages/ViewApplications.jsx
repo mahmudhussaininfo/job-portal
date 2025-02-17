@@ -17,7 +17,6 @@ const ViewApplications = () => {
       });
       if (data) {
         toast.success(data.message);
-        fetchCompanyJobDetails();
       } else {
         toast.error(data.message);
       }
