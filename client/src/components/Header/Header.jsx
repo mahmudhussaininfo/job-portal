@@ -45,10 +45,11 @@ const Header = () => {
       const { data } = await axios.get(`${BaseUrl}/logout-user`, {
         withCredentials: true,
       });
-      setUser(null);
-      toast.success(data.message);
-      fetchUser();
-      navigate("/");
+      if (data) {
+        toast.success(data.message);
+        fetchUser();
+        navigate("/");
+      }
     } catch (error) {
       toast.error(error.message);
     }
