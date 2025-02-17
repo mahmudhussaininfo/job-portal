@@ -12,13 +12,13 @@ const Header = () => {
   const { setShowRecrut, user, setUser, BaseUrl, isAuthenticated, fetchUser } =
     useContext(contextData);
 
+  const [img, setImg] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    photo: "",
   });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -64,13 +64,14 @@ const Header = () => {
     try {
       if (isRegister) {
         // Register user
-        const { data } = await axios.post(
-          `${BaseUrl}/api/register-user`,
-          formData
-        );
+        const form = new FormData();
+        form.append("name", formData.name);
+        form.append("email", formData.email);
+        form.append("password", formData.password);
+        form.append("photo", img);
+        const { data } = await axios.post(`${BaseUrl}/api/register-user`, form);
         if (data) {
           toast.success(data.message);
-          setUser(data.user);
           fetchUser();
           setShowLogin(false);
         } else {
@@ -221,7 +222,22 @@ const Header = () => {
                 className="border p-2 rounded"
                 required
               />
-              {isRegister && <input type="file" />}
+              {isRegister && (
+                <label htmlFor="image">
+                  <img
+                    className="cursor-pointer h-40 w-40 rounded-full"
+                    src={img ? URL.createObjectURL(img) : null}
+                    alt=""
+                  />
+
+                  <input
+                    onChange={(e) => setImg(e.target.files[0])}
+                    type="file"
+                    hidden
+                    id="image"
+                  />
+                </label>
+              )}
               <button
                 type="submit"
                 className="bg-purple-500 text-white p-2 rounded"
