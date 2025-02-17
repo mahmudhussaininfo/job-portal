@@ -126,7 +126,7 @@ const Header = () => {
             ) : null}
 
             <button
-              className="bg-purple-500 text-white md:px-5 md:py-2 py-2 px-6 text-sm rounded-full ml-2 max-sm:mr-5"
+              className="text-sm ml-2 max-sm:mr-5"
               onClick={() => navigate("/application")}
             >
               Applied Jobs

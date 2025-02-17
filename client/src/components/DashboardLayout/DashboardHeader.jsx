@@ -86,7 +86,7 @@ const DashboardHeader = () => {
             <p>Welcome</p>
             <div ref={dropdownRef} className="relative cursor-pointer">
               <img
-                className="h-8"
+                className="h-10 w-10 rounded-full"
                 src={assets.avatar}
                 alt="Default Profile"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
