@@ -84,6 +84,7 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: "none",
+      path: "/",
     };
 
     // set cookies
@@ -99,8 +100,20 @@ export const loginUser = async (req, res) => {
 
 // logout user
 export const logoutUser = async (req, res) => {
-  res.clearCookie("userToken");
-  return res.status(200).json({ message: "logout successful" });
+  try {
+    res.clearCookie("userToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "logout successful" });
+  } catch (error) {
+    console.error("Error logging out user:", error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 // apply for a job
