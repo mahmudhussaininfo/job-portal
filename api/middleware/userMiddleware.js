@@ -17,6 +17,7 @@ export default (req, res, next) => {
     secure: isProduction,
     sameSite: "none",
     path: "/",
+    domain: ".vercel.app",
   };
 
   res.cookie("userToken", decoded.refreshToken, options);
