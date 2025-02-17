@@ -84,8 +84,6 @@ export const loginUser = async (req, res) => {
       httpOnly: true,
       secure: isProduction,
       sameSite: "none",
-      path: "/",
-      domain: ".vercel.app",
     };
 
     // set cookies
@@ -106,8 +104,6 @@ export const logoutUser = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      path: "/",
-      domain: ".vercel.app",
     });
     return res
       .status(200)
