@@ -4,7 +4,6 @@ import * as userController from "../controller/userController.js";
 import express from "express";
 import { upload, file } from "../utils/multer.js";
 import authMiddleware from "../middleware/authMiddleware.js";
-import clerkMiddleware from "../middleware/clerkMiddleware.js";
 import userMiddleware from "../middleware/userMiddleware.js";
 
 const router = express.Router();
