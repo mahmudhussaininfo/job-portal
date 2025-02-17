@@ -15,7 +15,7 @@ const DashboardHeader = () => {
   // Logout function
   const handleLogout = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/company-delete`);
+      const { data } = await axios.get(`${BaseUrl}/company-delete`);
       if (data) {
         setIsAuthenticated(false);
         setCompanyData(null);

@@ -37,7 +37,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/user`, {
+      const { data } = await axios.get(`${BaseUrl}/user`, {
         withCredentials: true,
       });
       if (data) {
@@ -53,7 +53,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchJobsData = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/jobs`);
+      const { data } = await axios.get(`${BaseUrl}/jobs`);
       if (data) {
         setJobs(data.jobs);
       } else {
@@ -77,7 +77,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchAuthData = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/company`, {
+      const { data } = await axios.get(`${BaseUrl}/company`, {
         withCredentials: true,
       });
       if (data) {
@@ -94,7 +94,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchCompanyJobDetails = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/company-jobDetais`, {
+      const { data } = await axios.get(`${BaseUrl}/company-jobDetais`, {
         withCredentials: true,
       });
       if (data) {
@@ -109,7 +109,7 @@ export const ContextProvider = ({ children }) => {
 
   const fetchUserApplied = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/applied-jobs`, {
+      const { data } = await axios.get(`${BaseUrl}/applied-jobs`, {
         withCredentials: true,
       });
       if (data) {

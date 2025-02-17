@@ -36,7 +36,7 @@ const ApplyJob = () => {
 
   const fetchData = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/job/${id}`);
+      const { data } = await axios.get(`${BaseUrl}/job/${id}`);
       if (data) {
         setJobsData(data.job);
       } else {
@@ -57,7 +57,7 @@ const ApplyJob = () => {
         return toast.error("upload your resume first");
       }
       const { data } = await axios.post(
-        `${BaseUrl}/api/apply-job`,
+        `${BaseUrl}/apply-job`,
         { jobId: jobsData._id },
         { withCredentials: true }
       );

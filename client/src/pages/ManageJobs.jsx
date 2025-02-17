@@ -16,7 +16,7 @@ const ManageJobs = () => {
   const jobVissible = async (_id) => {
     try {
       const { data } = await axios.post(
-        `${BaseUrl}/api/job-visibility`,
+        `${BaseUrl}/job-visibility`,
         {
           _id,
         },
@@ -35,7 +35,7 @@ const ManageJobs = () => {
 
   const fetchJobs = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/list-jobs`, {
+      const { data } = await axios.get(`${BaseUrl}/list-jobs`, {
         withCredentials: true,
       });
       if (data) {

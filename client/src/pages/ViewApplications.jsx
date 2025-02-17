@@ -11,7 +11,7 @@ const ViewApplications = () => {
 
   const resumeUpdate = async (id, status) => {
     try {
-      const { data } = await axios.post(`${BaseUrl}/api/update-status`, {
+      const { data } = await axios.post(`${BaseUrl}/update-status`, {
         id,
         status,
       });

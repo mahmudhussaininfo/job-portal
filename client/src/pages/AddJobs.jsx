@@ -33,7 +33,7 @@ const AddJobs = () => {
       // add job logic here
       const description = quillRef.current.root.innerHTML;
       const { data } = await axios.post(
-        `${BaseUrl}/api/job-add`,
+        `${BaseUrl}/job-add`,
         {
           title: input.title,
           description,

@@ -17,7 +17,7 @@ const Application = () => {
 
   const fetchUserApplied = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/applied-jobs`, {
+      const { data } = await axios.get(`${BaseUrl}/applied-jobs`, {
         withCredentials: true,
       });
       if (data) {
@@ -35,7 +35,7 @@ const Application = () => {
     try {
       const formData = new FormData();
       formData.append("resume", upload);
-      const { data } = await axios.post(`${BaseUrl}/api/job-resume`, formData, {
+      const { data } = await axios.post(`${BaseUrl}/job-resume`, formData, {
         withCredentials: true,
       });
       if (data) {

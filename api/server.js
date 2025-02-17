@@ -19,8 +19,6 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "https://job-portal-oqh9.vercel.app"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allow necessary methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow specific headers
   })
 );
 

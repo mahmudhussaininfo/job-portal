@@ -42,7 +42,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const { data } = await axios.get(`${BaseUrl}/api/logout-user`, {
+      const { data } = await axios.get(`${BaseUrl}/logout-user`, {
         withCredentials: true,
       });
       if (data) {
@@ -69,7 +69,7 @@ const Header = () => {
         form.append("email", formData.email);
         form.append("password", formData.password);
         form.append("photo", img);
-        const { data } = await axios.post(`${BaseUrl}/api/register-user`, form);
+        const { data } = await axios.post(`${BaseUrl}/register-user`, form);
         if (data) {
           toast.success(data.message);
           fetchUser();
@@ -80,7 +80,7 @@ const Header = () => {
       } else {
         // Login user
         const { data } = await axios.post(
-          `${BaseUrl}/api/login-user`,
+          `${BaseUrl}/login-user`,
           {
             email: formData.email,
             password: formData.password,
