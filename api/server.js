@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "https://job-portal-9r7w-client.vercel.app",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
